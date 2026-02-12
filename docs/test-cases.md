@@ -8,8 +8,8 @@
     - User is on [login page](https://www.saucedemo.com/).
     - User has valid account
   - Steps:
-    - Enter username in the username field
-    - Enter password in the password field
+    - Enter standard_user in the username field
+    - Enter secret_sauce in the password field
     - Click on Login button
   - Test Data:
     - Test valid username: standard_user
@@ -30,8 +30,8 @@
     - User is on [login page](https://www.saucedemo.com/).
     - User has valid account
   - Steps:
-    - Enter username in the username field
-    - Enter a random password in the password field
+    - Enter standard_user in the username field
+    - Enter a random password (anythingLikeThis) in the password field
     - Click on Login button
   - Test Data:
     - Test valid username: standard_user
@@ -84,15 +84,15 @@
 - Test Case 5:
   - Test Case ID: TC-CART-002
   - Title: Verify user can remove items from the cart from inventory page
-  - Priority: P3 (Priority 3)
+  - Priority: P2 (Priority 2)
   - Preconditions:
     - User is on [login page](https://www.saucedemo.com/).
     - User has valid account
     - User is logged in
     - Session is active
     - User on Inventory page
-    - Click 'Add to cart' button on the first item
   - Steps:
+    - Click 'Add to cart' button on the first item
     - Click 'Remove' button on the first item
   - Test Data:
     - Test valid username: standard_user
@@ -106,17 +106,16 @@
 - Test Case 6:
   - Test Case ID: TC-CART-003
   - Title: Verify user can remove items from the cart from cart page
-  - Priority: P3 (Priority 3)
+  - Priority: P2 (Priority 2)
   - Preconditions:
     - User is on [login page](https://www.saucedemo.com/).
     - User has valid account
     - User is logged in
     - Session is active
     - User on Inventory page
-    - Click 'Add to cart' button on the first item
   - Steps:
+    - Click 'Add to cart' button on the first item
     - Click on the cart icon in the top right corner of the inventory page
-    - User should be in cart page with the item listed, a button to checkout, and a button to continue shopping.
     - Click 'Remove' button in the cart
   - Test Data:
     - Test valid username: standard_user
@@ -136,11 +135,10 @@
     - User is on [login page](https://www.saucedemo.com/).
     - User has valid account
     - User is logged in
-    - Session is not active
+    - Session is active
     - User on Inventory page
-    - Click 'Add to cart' button on the first item
-    - The cart at the top right corner should have a 1 displayed on it.
   - Steps:
+    - Click 'Add to cart' button on the first item
     - Click on navigation hamburger on the top left corner
     - navigation menu should display with option:
       - All Items
@@ -149,8 +147,8 @@
       - Reset App State
     - Click 'Logout' button
     - User should be in login page now
-    - Enter username in the username field
-    - Enter password in the password field
+    - Enter standard_user in the username field
+    - Enter secret_sauce in the password field
     - Click on Login button
     - User should now be in the inventory page
   - Test Data:
@@ -175,15 +173,11 @@
   - Steps:
     - Click 'Add to cart' button on the first item
     - Click on Cart button at the top right corner of the page
-    - Cart page should load with item added listed
-    - Cart page should have a checkout button under cart items to the right.
     - Click Checkout button.
-    - Checkout step one page should load, dispalying a checkout form
-    - Enter a first name
-    - Enter a last name
-    - Enter a valid zipcode
+    - Enter standard in first name field
+    - Enter user in last name field
+    - Enter 00000 in valid zipcode field
     - Click Continue button under form
-    - User sould now be in Checkout step two page which displays an overview of items and payment/shipping information.
     - Click Finish button
   - Test Data:
     - Test valid username: standard_user
@@ -192,11 +186,11 @@
     - Test valid last name: user
     - Test valid zip code: 00000
   - Expected Result:
-    - User successfully checkout out.
-  - Postconditions:
-    - User is not in Checkout complete page with a Thank you note and a button to return back home
+    - User is in Checkout complete page with a Thank you note and a button to return back home
       - Thank you note: "Thank you for your order! Your order has been dispatched, and will arrive just as fast as the pony can get there!"
       - Button: "Back Home"
+  - Postconditions:
+    - User is not in Checkout complete page
     - Cart is empty
 
 - Test Case 9:
@@ -212,12 +206,9 @@
   - Steps:
     - Click 'Add to cart' button on the first item
     - Click on Cart button at the top right corner of the page
-    - Cart page should load with item added listed
-    - Cart page should have a checkout button under cart items to the right.
     - Click Checkout button.
-    - Checkout step one page should load, dispalying a checkout form
-    - Enter a first name
-    - Enter a last name
+    - Enter standard in first name field
+    - Enter user in last name field
     - Keep zip/postal code empty
     - Click Continue button under form
   - Test Data:
@@ -244,13 +235,11 @@
   - Steps:
     - Click 'Add to cart' button on the first item
     - Click on Cart button at the top right corner of the page
-    - Cart page should load with item added listed
-    - Cart page should have a checkout button under cart items to the right.
     - Click Checkout button.
-    - Checkout step one page should load, dispalying a checkout form
     - Copy Checkout step one url (https://www.saucedemo.com/checkout-step-one.html)
     - Alter the url to point to checkout step two (https://www.saucedemo.com/checkout-step-two.html)
-    - paste checkout two url in the browser bar.
+    - Paste checkout two url in the browser bar.
+    - Click Enter
   - Test Data:
     - Test valid username: standard_user
     - Test valid password: secret_sauce
@@ -273,7 +262,6 @@
     - Session is active
     - User on Inventory page
   - Steps:
-    - Inventory should be filtered by default by Name (A to Z)
     - Click filter icon at the top right corner under the cart icon to view filter options
       - Name (A to Z) (Default)
       - Name (Z to A)

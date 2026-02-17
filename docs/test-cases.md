@@ -140,11 +140,6 @@
   - Steps:
     - Click 'Add to cart' button on the first item
     - Click on navigation hamburger on the top left corner
-      - navigation menu should display with option:
-        - All Items
-        - About
-        - Logout
-        - Reset App State
     - Click 'Logout' button
     - Enter standard_user in the username field
     - Enter secret_sauce in the password field
@@ -260,11 +255,7 @@
     - Session is active
     - User on Inventory page
   - Steps:
-    - Click filter icon at the top right corner under the cart icon to view filter options
-      - Name (A to Z) (Default)
-      - Name (Z to A)
-      - Price (low to high
-      - Price (high to low)
+    - Click the sort dropdown at the top right corner.
     - Click on Price (high to low)
   - Test Data:
     - Test valid username: standard_user

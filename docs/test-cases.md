@@ -140,17 +140,15 @@
   - Steps:
     - Click 'Add to cart' button on the first item
     - Click on navigation hamburger on the top left corner
-    - navigation menu should display with option:
-      - All Items
-      - About
-      - Logout
-      - Reset App State
+      - navigation menu should display with option:
+        - All Items
+        - About
+        - Logout
+        - Reset App State
     - Click 'Logout' button
-    - User should be in login page now
     - Enter standard_user in the username field
     - Enter secret_sauce in the password field
     - Click on Login button
-    - User should now be in the inventory page
   - Test Data:
     - Test valid username: standard_user
     - Test valid password: secret_sauce

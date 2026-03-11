@@ -1,6 +1,8 @@
 node_modules/
-.env
-.DS_Store
+dist/
 test-results/
 playwright-report/
-*.log
+blob-report/
+.env
+*.log.DS_Store
+**/

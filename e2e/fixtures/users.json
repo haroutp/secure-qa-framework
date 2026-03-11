@@ -1,0 +1,55 @@
+{
+  "users": {
+    "standard": {
+      "firstName": "John",
+      "lastName": "Doe",
+      "postalCode": "90210",
+      "username": "standard_user",
+      "password": "secret_sauce",
+      "description": "Normal user - everything works"
+    },
+    "locked_out": {
+      "username": "locked_out_user",
+      "password": "secret_sauce",
+      "description": "Locked out - cannot login"
+    },
+    "problem": {
+      "username": "problem_user",
+      "password": "secret_sauce",
+      "description": "Broken images, form field issues"
+    },
+    "performance_glitch": {
+      "username": "performance_glitch_user",
+      "password": "secret_sauce",
+      "description": "Slow responses - good for timeout testing"
+    },
+    "error": {
+      "username": "error_user",
+      "password": "secret_sauce",
+      "description": "Triggers errors in various flows"
+    },
+    "visual": {
+      "username": "visual_user",
+      "password": "secret_sauce",
+      "description": "Visual bugs - misaligned elements"
+    }
+  },
+  "invalid": {
+    "wrong_password": {
+      "username": "standard_user",
+      "password": "wrong_password"
+    },
+    "empty_username": {
+      "username": "",
+      "password": "secret_sauce"
+    },
+    "empty_password": {
+      "username": "standard_user",
+      "password": ""
+    },
+    "both_empty": {
+      "username": "",
+      "password": ""
+    }
+  }
+}

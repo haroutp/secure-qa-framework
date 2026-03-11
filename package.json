@@ -1,0 +1,27 @@
+{
+  "name": "secure-qa-framework",
+  "version": "1.0.0",
+  "description": "A comprehensive QA automation framework integrating functional testing, security testing, and performance testing into CI/CD pipelines.",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/haroutp/secure-qa-framework.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/haroutp/secure-qa-framework/issues"
+  },
+  "homepage": "https://github.com/haroutp/secure-qa-framework#readme",
+  "devDependencies": {
+    "@playwright/test": "^1.58.2"
+  }
+}

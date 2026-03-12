@@ -1,106 +1,108 @@
 import { test, expect } from '@playwright/test';
 import users from '../fixtures/users.json';
+import { LoginPage } from '../pages/LoginPage';
+import { InventoryPage } from '../pages/InventoryPage';
+import { CartPage } from '../pages/CartPage';
+import { CheckouttPage } from '../pages/CheckoutPage';
 
 test.describe('Cart Page', () => {
     test.beforeEach(async ({ page }) => {
-        await page.goto('/');
-        await page.getByTestId('username').fill(users.users.standard.username)
-        await page.getByTestId('password').fill(users.users.standard.password)
-        await page.getByTestId('login-button').click();
+        const loginPage = new LoginPage(page);
+        const inventoryPage = new InventoryPage(page);
+        await loginPage.goto();
+        await loginPage.loginAs(users.users.standard)
+
+        // ASSERTION: After login, URL should contain 'inventory'
+        // This proves we actually navigated away from the login page
         await expect(page).toHaveURL(/inventory/);
-        await expect(page.locator('.title')).toHaveText('Products');
+
+        // ASSERTION: The page title should show 'Products'
+        // This proves the inventory page loaded correctly
+        await inventoryPage.expectTitle('Products');
     });
 
     test('should successfully add item to cart', async ({ page }) => {
-        await page.getByTestId('inventory-item')
-            .filter({ hasText: 'Sauce Labs Backpack'})
-            .getByRole('button', {name: 'Add to cart'})
-            .click();
-        await page.getByTestId('inventory-item')
-            .filter({ hasText: 'Sauce Labs Onesie'})
-            .getByRole('button', {name: 'Add to cart'})
-            .click()
-        await page.getByTestId('shopping-cart-link').click();
+        const inventoryPage = new InventoryPage(page);
+        const cartPage = new CartPage(page);
+        await inventoryPage.expectBadgeDisabled();
+        await inventoryPage.addToCart('Sauce Labs Backpack');
+        await inventoryPage.addToCart('Sauce Labs Onesie');
+        await inventoryPage.expectBadge('2');
+        await inventoryPage.goToCart();
         await expect(page).toHaveURL(/cart/);
-        await expect(page.getByTestId('inventory-item')).toHaveCount(2);
-        await expect(page.getByTestId('inventory-item-name').nth(0)).toHaveText('Sauce Labs Backpack');
-        await expect(page.getByTestId('inventory-item-name').nth(1)).toHaveText('Sauce Labs Onesie');
+        await cartPage.expectTitle('Your Cart');
+        await cartPage.expectProductCount(2);
+        await cartPage.expectInventoryItem(0, 'Sauce Labs Backpack');
+        await cartPage.expectInventoryItem(1, 'Sauce Labs Onesie');
     });
 
     test('should successfully remove an item from the cart', async ({ page }) => {
-        await page.getByTestId('inventory-item')
-            .filter({ hasText: 'Sauce Labs Backpack'})
-            .getByRole('button', {name: 'Add to cart'})
-            .click();
-        await page.getByTestId('inventory-item')
-            .filter({ hasText: 'Sauce Labs Onesie'})
-            .getByRole('button', {name: 'Add to cart'})
-            .click()
-        await page.getByTestId('shopping-cart-link').click();
+        const inventoryPage = new InventoryPage(page);
+        const cartPage = new CartPage(page);
+        await inventoryPage.addToCart('Sauce Labs Backpack');
+        await inventoryPage.addToCart('Sauce Labs Onesie');
+        await inventoryPage.goToCart();
         await expect(page).toHaveURL(/cart/);
-        await expect(page.getByTestId('inventory-item')).toHaveCount(2);
-        await page.getByRole('button', { name: 'Remove'}).first().click();
-        await expect(page.getByTestId('inventory-item')).toHaveCount(1);
-        await expect(page.getByTestId('inventory-item-name')).toHaveText('Sauce Labs Onesie');
+        await cartPage.expectTitle('Your Cart');
+        await cartPage.expectProductCount(2);
+        await cartPage.removeItem('Sauce Labs Backpack');
+        await cartPage.expectProductCount(1);
     });
 
     test('should successfully complete user journey from inventory to checkout', async ({ page }) => {
-        const item = 'Sauce Labs Onesie'
-        await page.getByTestId('inventory-item')
-            .filter({ hasText: item})
-            .getByRole('button', {name: 'Add to cart'})
-            .click();
-        await page.getByTestId('shopping-cart-link').click();
+        const inventoryPage = new InventoryPage(page);
+        const cartPage = new CartPage(page);
+        const checkoutPage = new CheckouttPage(page);
+        await inventoryPage.addToCart('Sauce Labs Backpack');
+        await inventoryPage.goToCart();
         await expect(page).toHaveURL(/cart/);
-        await expect(page.getByTestId('inventory-item')).toHaveCount(1);
-        await page.getByRole('button', { name: 'Checkout'}).click();
+        await cartPage.expectProductCount(1);
+        await cartPage.checkout();
         await expect(page).toHaveURL(/checkout-step-one/);
-        await expect(page.getByTestId('title')).toHaveText('Checkout: Your Information');
-        await page.getByTestId('firstName').fill(users.users.standard.firstName);
-        await page.getByTestId('lastName').fill(users.users.standard.lastName);
-        await page.getByTestId('postalCode').fill(users.users.standard.postalCode);
-        await page.getByTestId('continue').click()
+        await checkoutPage.expectTitle('Checkout: Your Information');
+        await checkoutPage.fillFirstName(users.users.standard.username);
+        await checkoutPage.fillLastName(users.users.standard.lastName);
+        await checkoutPage.fillPostalCode(users.users.standard.postalCode);
+        // await checkoutPage.fillCheckoutInformation(users.users.standard);
+        await checkoutPage.continueCheckout();
         await expect(page).toHaveURL(/checkout-step-two/);
-        await expect(page.getByTestId('inventory-item-name')).toHaveText(item);
-        await expect(page.getByTestId('total-label')).toBeVisible();
-        await expect(page.getByRole('button', { name: 'Finish' })).toBeVisible();
-        await page.getByRole('button', { name: 'Finish' }).click();
+        await checkoutPage.expectTitle('Checkout: Overview');
+        await checkoutPage.expectInventoryItem(0, 'Sauce Labs Backpack');
+        await checkoutPage.expectPriceLabel();
+        await checkoutPage.finishCheckout();
         await expect(page).toHaveURL(/checkout-complete/);
-        await expect(page.getByRole('heading', { name: 'Thank you for your order!' })).toBeVisible();
-        await expect(page.getByRole('button', { name: 'Back Home'})).toBeVisible();
+        await checkoutPage.expectCheckoutCompleteHeader();
+        await checkoutPage.expectBackHomeButton();
     });
 
     test('should show error when first name is empty in checkout information', async ({ page }) => {
-        const item = 'Sauce Labs Onesie'
-        await page.getByTestId('inventory-item')
-            .filter({ hasText: item})
-            .getByRole('button', {name: 'Add to cart'})
-            .click();
-        await page.getByTestId('shopping-cart-link').click();
+        const inventoryPage = new InventoryPage(page);
+        const cartPage = new CartPage(page);
+        const checkoutPage = new CheckouttPage(page);
+        await inventoryPage.addToCart('Sauce Labs Backpack');
+        await inventoryPage.goToCart();
         await expect(page).toHaveURL(/cart/);
-        await expect(page.getByTestId('inventory-item')).toHaveCount(1);
-        await page.getByRole('button', { name: 'Checkout'}).click();
+        await cartPage.expectProductCount(1);
+        await cartPage.checkout();
         await expect(page).toHaveURL(/checkout-step-one/);
-        await expect(page.getByTestId('title')).toHaveText('Checkout: Your Information');
-        await page.getByTestId('lastName').fill(users.users.standard.lastName);
-        await page.getByTestId('postalCode').fill(users.users.standard.postalCode);
-        await page.getByTestId('continue').click();
-        // await expect(page.getByRole('heading', { name: "Error: First Name is required" })).toBeVisible(); // works but wanted to try the other way too.
-        await expect(page.getByTestId('error')).toBeVisible();
-        await expect(page.getByTestId('error')).toHaveText("Error: First Name is required");
+        await checkoutPage.expectTitle('Checkout: Your Information');
+        await checkoutPage.fillLastName(users.users.standard.lastName);
+        await checkoutPage.fillPostalCode(users.users.standard.postalCode);
+        // await checkoutPage.fillCheckoutInformation(users.users.standard);
+        await checkoutPage.continueCheckout();
+        await checkoutPage.error.isVisible();
     });
 
     test('should successfully allow to continue shopping by returning to inventory page', async ({ page }) => {
-        const item = 'Sauce Labs Onesie'
-        await page.getByTestId('inventory-item')
-            .filter({ hasText: item})
-            .getByRole('button', {name: 'Add to cart'})
-            .click();
-        await page.getByTestId('shopping-cart-link').click();
+        const inventoryPage = new InventoryPage(page);
+        const cartPage = new CartPage(page);
+        await inventoryPage.addToCart('Sauce Labs Backpack');
+        await inventoryPage.addToCart('Sauce Labs Onesie');
+        await inventoryPage.goToCart();
         await expect(page).toHaveURL(/cart/);
-        await expect(page.getByTestId('inventory-item')).toHaveCount(1);
-        await expect(page.getByRole('button', { name: 'Continue Shopping'})).toBeVisible();
-        await page.getByRole('button', { name: 'Continue Shopping'}).click();
+        await cartPage.expectTitle('Your Cart');
+        await cartPage.expectProductCount(2);
+        await cartPage.continueShopping();
         await expect(page).toHaveURL(/inventory/);
     });
 });

@@ -3,7 +3,7 @@ import users from '../fixtures/users.json';
 import { LoginPage } from '../pages/LoginPage';
 import { InventoryPage } from '../pages/InventoryPage';
 import { CartPage } from '../pages/CartPage';
-import { CheckouttPage } from '../pages/CheckoutPage';
+import { CheckoutPage } from '../pages/CheckoutPage';
 
 test.describe('Cart Page', () => {
     test.beforeEach(async ({ page }) => {
@@ -52,7 +52,7 @@ test.describe('Cart Page', () => {
     test('should successfully complete user journey from inventory to checkout', async ({ page }) => {
         const inventoryPage = new InventoryPage(page);
         const cartPage = new CartPage(page);
-        const checkoutPage = new CheckouttPage(page);
+        const checkoutPage = new CheckoutPage(page);
         await inventoryPage.addToCart('Sauce Labs Backpack');
         await inventoryPage.goToCart();
         await expect(page).toHaveURL(/cart/);
@@ -78,7 +78,7 @@ test.describe('Cart Page', () => {
     test('should show error when first name is empty in checkout information', async ({ page }) => {
         const inventoryPage = new InventoryPage(page);
         const cartPage = new CartPage(page);
-        const checkoutPage = new CheckouttPage(page);
+        const checkoutPage = new CheckoutPage(page);
         await inventoryPage.addToCart('Sauce Labs Backpack');
         await inventoryPage.goToCart();
         await expect(page).toHaveURL(/cart/);
@@ -104,5 +104,15 @@ test.describe('Cart Page', () => {
         await cartPage.expectProductCount(2);
         await cartPage.continueShopping();
         await expect(page).toHaveURL(/inventory/);
+    });
+
+    test('should allow checkout with empty cart (known bug).', async ({ page }) => {
+        const inventoryPage = new InventoryPage(page);
+        const cartPage = new CartPage(page);
+        await inventoryPage.goToCart();
+        await expect(page).toHaveURL(/cart/);
+        await cartPage.expectTitle('Your Cart');
+        await cartPage.continueShopping();
+        await expect(page).toHaveURL(/inventory/); 
     });
 });

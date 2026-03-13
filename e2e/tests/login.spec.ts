@@ -53,6 +53,14 @@ test.describe('Login Page', () => {
     await loginPage.expectError('locked out');
   });
 
+  test('should successfully login as performance glitch user', async ({ page }) => {
+    const loginPage = new LoginPage(page);
+    const inventoryPage = new InventoryPage(page);
+    await loginPage.loginAs(users.users.performance_glitch);
+    await expect(page).toHaveURL(/inventory/);
+    await inventoryPage.expectTitle('Products');
+  });
+
   test('should show error for wrong password', async ({ page }) => {
     const loginPage = new LoginPage(page);
     await loginPage.loginAs(users.invalid.wrong_password);

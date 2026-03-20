@@ -1,28 +1,17 @@
 import { test, expect } from '@playwright/test';
+import { loginAsStandardUser } from '../helpers/auth.helper';
 import users from '../fixtures/users.json';
 import { Page } from '@playwright/test';
-import { LoginPage } from '../pages/LoginPage';
 import { InventoryPage } from '../pages/InventoryPage';
 import { CartPage } from '../pages/CartPage';
 import { CheckoutPage } from '../pages/CheckoutPage';
 
-test.describe('Cart Page', () => {
+test.describe('Checkout Page', () => {
     test.beforeEach(async ({ page }) => {
-        const loginPage = new LoginPage(page);
-        const inventoryPage = new InventoryPage(page);
-        await loginPage.goto();
-        await loginPage.loginAs(users.users.standard)
-
-        // ASSERTION: After login, URL should contain 'inventory'
-        // This proves we actually navigated away from the login page
-        await expect(page).toHaveURL(/inventory/);
-
-        // ASSERTION: The page title should show 'Products'
-        // This proves the inventory page loaded correctly
-        await inventoryPage.expectTitle('Products');
+        await loginAsStandardUser(page);
     });
 
-    test('should show error when first name is empty in checkout information', async ({ page }) => {
+    test('should show error when first name in checkout information is empty ', async ({ page }) => {
         const checkoutPage = new CheckoutPage(page);
         const inventoryPage = new InventoryPage(page);
         const cartPage = new CartPage(page);
@@ -34,7 +23,7 @@ test.describe('Cart Page', () => {
         await expect(checkoutPage.error).toContainText('First Name is required');
     });
     
-    test('should show error when last name is empty in checkout information', async ({ page }) => {
+    test('should show error when last name in checkout information is empty', async ({ page }) => {
         const checkoutPage = new CheckoutPage(page);
         const inventoryPage = new InventoryPage(page);
         const cartPage = new CartPage(page);
@@ -46,7 +35,7 @@ test.describe('Cart Page', () => {
         await expect(checkoutPage.error).toContainText('Last Name is required');
     });
     
-    test('should show error when postal code is empty in checkout information', async ({ page }) => {
+    test('should show error when postal code in checkout information is empty', async ({ page }) => {
         const checkoutPage = new CheckoutPage(page);
         const inventoryPage = new InventoryPage(page);
         const cartPage = new CartPage(page);

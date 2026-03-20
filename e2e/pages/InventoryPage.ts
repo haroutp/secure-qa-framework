@@ -36,6 +36,13 @@ export class InventoryPage {
                 .click()
   }
 
+  async removeFromCart(productName: string) {
+    await this.inventoryItem
+                .filter({ hasText: productName})
+                .getByRole('button', { name: 'Remove' })
+                .click()
+  }
+
   async sortBy(option: string) {
     await this.filterButton.selectOption(option);
   }
@@ -56,5 +63,19 @@ export class InventoryPage {
   async expectBadge(count: string) {
     await expect(this.cartBadge).toBeVisible();
     await expect(this.cartBadge).toHaveText(count);
+  }
+
+  async expectAddItemButton(productName: string) {
+    await expect(this.inventoryItem
+                .filter({ hasText: productName})
+                .getByRole('button', { name: 'Add to cart' }))
+                .toBeVisible();
+  }
+
+  async expectRemoveButton(productName: string) {
+    await expect(this.inventoryItem
+                .filter({ hasText: productName})
+                .getByRole('button', { name: 'Remove' }))
+                .toBeVisible();
   }
 }

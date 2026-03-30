@@ -2,7 +2,7 @@ import { defineConfig, devices } from '@playwright/test';
 
 export default defineConfig({
   // Where your tests live
-  testDir: './e2e/tests',
+  // testDir: './e2e/tests',
 
   // Run tests in parallel
   fullyParallel: true,
@@ -39,6 +39,14 @@ export default defineConfig({
     {
       name: 'chromium',
       use: { ...devices['Desktop Chrome'] },
+      testDir: './e2e/tests',
+    },
+    {
+      name: 'api',
+      testDir: './api/tests',
+      use: {
+        baseURL: 'https://jsonplaceholder.typicode.com',
+      },
     },
     // Uncomment to add more browsers later:
     // {

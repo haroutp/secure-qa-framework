@@ -44,4 +44,60 @@ test.describe('Users API', () => {
         const response = await request.delete('/users/1');
         expect(response.status()).toBe(200);
     });
+
+    
+    test('GET /users should respond with all expected fields with correct types', async ({ request }) => {
+        const response = await request.get('/users');
+        expect(response.status()).toBe(200);
+
+        const body = await response.json();
+        expect(Array.isArray(body)).toBe(true);
+        expect(body.length).toBeGreaterThan(0);
+
+        for (const user of body) {
+            expect(user).toHaveProperty('id');
+            expect(user).toHaveProperty('name');
+            expect(user).toHaveProperty('email');
+            expect(user).toHaveProperty('address');
+            expect(typeof user.id).toBe('number');
+            expect(typeof user.name).toBe('string');
+            expect(typeof user.email).toBe('string');
+            expect(typeof user.address).toBe('object');
+        }
+    });
+
+    test('GET /users/1 should respond with all expected fields with correct types', async ({ request }) => {
+        const response = await request.get('/users/1');
+        expect(response.status()).toBe(200);
+
+        const body = await response.json();
+        expect(body.id).toBe(1);
+
+        expect(body).toHaveProperty('id');
+        expect(body).toHaveProperty('name');
+        expect(body).toHaveProperty('email');
+        expect(body).toHaveProperty('address');
+        expect(typeof body.id).toBe('number');
+        expect(typeof body.name).toBe('string');
+        expect(typeof body.email).toBe('string');
+        expect(typeof body.address).toBe('object');
+
+    });
+
+    test('POST /users with empty body should return 201 (no server-side validation)', async ({ request }) => {
+        const response = await request.post('/users', {
+            data: {}
+        });
+        expect(response.status()).toBe(201);
+        const body = await response.json();
+        expect(body).toHaveProperty('id');
+    });
+
+    test('GET /nonexistent should respond with a 404', async ({ request }) => {
+        const response = await request.get('/nonexistent');
+        expect(response.status()).toBe(404);
+
+        const body = await response.json();
+        expect(Object.keys(body).length).toBe(0);
+    });
 });
